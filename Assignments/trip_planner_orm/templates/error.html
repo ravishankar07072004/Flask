@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block title %}{{ title }} | Trip Planner{% endblock %}{% block content %}<section class="empty-state"><div class="empty-icon">!</div><h1>{{ title }}</h1><p>{{ message }}</p><a class="btn btn-primary" href="{{ url_for('home') }}">Go home</a></section>{% endblock %}

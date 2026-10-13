@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+<div class="auth-layout"><div class="auth-art"><span class="eyebrow">WELCOME TO THE CLUB</span><h2>Every great movie night starts with a plan.</h2><p>Join in, share your picks, and help choose what everyone watches.</p><div class="big-play">▶</div></div>
+<div class="form-card"><p class="eyebrow">CREATE YOUR ACCOUNT</p><h1>Sign up</h1><p class="muted">A few details and you’re in.</p>
+<form method="post" class="stack-form">
+<label>Full name<input name="name" maxlength="100" required autocomplete="name" value="{{ request.form.get('name','') }}"></label>
+<label>Username<input name="username" maxlength="50" required autocomplete="username" value="{{ request.form.get('username','') }}"></label>
+<label>Password<input type="password" name="password" minlength="8" required autocomplete="new-password"><small>Use at least 8 characters.</small></label>
+<button class="button full" type="submit">Create account</button>
+</form><p class="form-bottom">Already registered? <a href="{{ url_for('login') }}">Log in</a></p></div></div>
+{% endblock %}

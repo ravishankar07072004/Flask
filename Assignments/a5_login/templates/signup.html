@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Create account | Community Events{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="panel form-panel auth-panel">
+    <span class="eyebrow">Join the community</span>
+    <h1>Create account</h1>
+    <p class="lead">Use your account to manage events and registrations.</p>
+    <form method="POST" action="{{ url_for('signup') }}">
+      <div class="field"><label for="name">Full name *</label><input id="name" name="name" autocomplete="name" maxlength="100" required></div>
+      <div class="field auth-field"><label for="email">Email address *</label><input id="email" name="email" type="email" autocomplete="email" maxlength="190" required></div>
+      <div class="field auth-field"><label for="password">Password *</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required><div class="hint">Use at least 8 characters.</div></div>
+      <div class="field auth-field"><label for="confirm_password">Confirm password *</label><input id="confirm_password" name="confirm_password" type="password" minlength="8" autocomplete="new-password" required></div>
+      <button class="btn auth-submit" type="submit">Create account</button>
+    </form>
+    <p class="auth-switch">Already registered? <a href="{{ url_for('login') }}">Log in</a></p>
+  </div>
+</section>
+{% endblock %}

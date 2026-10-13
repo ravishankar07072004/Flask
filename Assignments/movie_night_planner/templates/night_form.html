@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="narrow-page"><a class="back-link" href="{{ url_for('night_detail', night_id=night.id) if night else url_for('home') }}">← Back</a>
+<div class="form-card wide"><p class="eyebrow">MAKE IT A MOVIE NIGHT</p><h1>{{ page_title }}</h1><p class="muted">Set the details so everyone knows what the plan is.</p>
+<form method="post" class="stack-form">
+<label>Movie night title<input name="title" maxlength="150" required placeholder="e.g. Friday Movie Night" value="{{ request.form.get('title', night.title if night else '') }}"></label>
+<label>Date<input type="date" name="night_date" required value="{{ request.form.get('night_date', night.night_date.isoformat() if night else '') }}"></label>
+<label>Category<select name="category" required><option value="">Choose a category</option>{% for item in categories %}<option value="{{ item }}" {% if request.form.get('category', night.category if night else '') == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></label>
+<label>Short description<textarea name="description" rows="4" maxlength="500" required placeholder="Tell everyone what kind of movie night you have in mind...">{{ request.form.get('description', night.description if night else '') }}</textarea></label>
+<button class="button full" type="submit">{{ 'Save changes' if night else 'Create movie night' }}</button>
+</form></div></div>
+{% endblock %}

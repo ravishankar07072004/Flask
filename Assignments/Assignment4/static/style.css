@@ -1,0 +1,304 @@
+/* ── style.css ─────────────────────────────────────
+   Styles for the Student Registration Form App
+   ───────────────────────────────────────────────── */
+
+/* Reset and Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f2f5;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── HEADER ─────────────────────────────── */
+.site-header {
+    background: #005857;
+    color: #fff;
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.main-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.main-nav a {
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+}
+
+.main-nav a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.site-footer {
+    background: #005857;
+    color: #94a3b8;
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
+    font-size: 13px;
+}
+
+.site-footer p {
+    margin: 3px 0;
+}
+
+/* Main Container */
+.container {
+    max-width: 650px;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    flex: 1 0 auto;
+}
+
+/* Headings */
+h1 {
+    font-size: 28px;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 30px;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+    font-size: 14px;
+}
+
+.required {
+    color: #e74c3c;
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+    background: #fafafa;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+select:focus {
+    border-color: #3498db;
+    outline: none;
+    background: #fff;
+}
+
+/* Radio Buttons */
+.radio-group {
+    display: flex;
+    gap: 24px;
+    margin-top: 6px;
+}
+
+.radio-label {
+    font-weight: 400 !important;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+input[type="radio"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: #1d4ed8;
+}
+
+/* Message Box */
+.message {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* (Navigation is now in the header via base.html) */
+
+/* ── Users Table Page ─────────────────── */
+
+.user-count {
+    background: #eef2ff;
+    color: #3730a3;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.users-table thead {
+    background: #1a1a2e;
+    color: #fff;
+}
+
+.users-table th {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.users-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.users-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.users-table tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+/* No Users Message */
+.no-users {
+    text-align: center;
+    padding: 40px 20px;
+    color: #888;
+}
+
+.no-users p:first-child {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .header-content {
+        flex-direction: column;
+        height: auto;
+        padding: 12px 0;
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 17px;
+    }
+
+    .main-nav a {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .container {
+        margin: 20px 10px;
+        padding: 24px 20px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+}

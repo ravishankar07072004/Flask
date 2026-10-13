@@ -1,0 +1,12 @@
+<header class="top">
+    <div class="top-inner">
+        <a class="brand" href="{{ url_for('index') }}">community<span>·</span><em>events</em></a>
+        <nav class="nav" aria-label="Main navigation">
+            <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Explore</a>
+            {% set active_id = event.id if (event is defined and event.id) else 1 %}
+            <a href="{{ url_for('event_details', event_id=active_id) }}" class="{% if request.endpoint == 'event_details' %}active{% endif %}">Event details</a>
+            <a href="{{ url_for('register_event', event_id=active_id) }}" class="{% if request.endpoint == 'register_event' %}active{% endif %}">Registration</a>
+            <a href="{{ url_for('create_event') }}" class="nav-cta">+ Post event</a>
+        </nav>
+    </div>
+</header>

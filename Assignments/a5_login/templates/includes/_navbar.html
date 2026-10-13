@@ -1,0 +1,16 @@
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="{{ url_for('index') }}">community<span>·</span><em>events</em></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Explore</a>
+      {% if logged_in %}
+        <a href="{{ url_for('create_event') }}" class="nav-cta">+ Post event</a>
+        <span class="nav-user">Hi, {{ current_user_name }}</span>
+        <form method="POST" action="{{ url_for('logout') }}" class="nav-form"><button type="submit">Log out</button></form>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Log in</a>
+        <a href="{{ url_for('signup') }}" class="nav-cta">Create account</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>

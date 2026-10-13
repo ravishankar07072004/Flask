@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tea Shop Order Simulator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">FLASK + JAVASCRIPT CLASSROOM KEY</p>
+      <h1><span class="cup">☕</span> Tea Shop Order Simulator</h1>
+      <p>Take another order while earlier tea is being prepared.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="predict panel">
+      <h2>Predict before you click</h2>
+      <p>Place a 6-second order, then a 2-second order. Which tea will be ready first?</p>
+      <div class="demo-buttons">
+        <button type="button" class="demo-button" data-demo="broken">1 · Run broken return</button>
+        <button type="button" class="demo-button" data-demo="callback">2 · Run callback</button>
+        <button type="button" class="demo-button" data-demo="promise">3 · Run Promise .then()</button>
+      </div>
+      <p class="small-note">The demonstration buttons use local timers. Customer orders below are saved through Flask.</p>
+    </section>
+
+    <div class="top-grid">
+      <section class="panel order-panel">
+        <h2>Place an order</h2>
+        <form id="order-form" novalidate>
+          <label for="customer-name">Customer name</label>
+          <input id="customer-name" name="customer_name" minlength="2" maxlength="50" placeholder="e.g. Anu" required>
+
+          <label for="tea-type">Tea type</label>
+          <select id="tea-type" name="tea_type" required>
+            <option value="Regular">Regular tea</option>
+            <option value="Ginger">Ginger tea</option>
+            <option value="Green">Green tea</option>
+          </select>
+
+          <label for="preparation-seconds">Preparation time</label>
+          <select id="preparation-seconds" name="preparation_seconds" required>
+            <option value="2">2 seconds</option>
+            <option value="4">4 seconds</option>
+            <option value="6">6 seconds</option>
+          </select>
+
+          <label class="check-row">
+            <input id="simulate-failure" type="checkbox">
+            <span>Simulate failure (ingredients unavailable)</span>
+          </label>
+
+          <button type="submit" class="primary">Place order</button>
+          <p id="form-message" class="form-message" role="alert" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="panel activity-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Activity log</h2>
+            <p>Watch what happens now and what happens later.</p>
+          </div>
+          <button type="button" id="clear-log" class="quiet-button">Clear log</button>
+        </div>
+        <ol id="activity-log" class="activity-log" aria-live="polite"></ol>
+      </section>
+    </div>
+
+    <section class="status-grid">
+      <article class="panel status-panel">
+        <h2>⌛ Preparing <span id="preparing-count" class="count">0</span></h2>
+        <div id="preparing-orders" class="order-list"><p class="empty">No orders</p></div>
+      </article>
+      <article class="panel status-panel">
+        <h2>✅ Ready <span id="ready-count" class="count">0</span></h2>
+        <div id="ready-orders" class="order-list"><p class="empty">No orders</p></div>
+      </article>
+      <article class="panel status-panel">
+        <h2>⚠ Failed <span id="failed-count" class="count">0</span></h2>
+        <div id="failed-orders" class="order-list"><p class="empty">No orders</p></div>
+      </article>
+    </section>
+
+    <section class="panel teaching-panel">
+      <h2>What to point out while teaching</h2>
+      <div class="teaching-grid">
+        <div><h3>Broken return</h3><p>The outer function finishes before its timer callback runs. Its immediate return value is undefined.</p></div>
+        <div><h3>Callback</h3><p>Pass a function now. The timer calls it later with the prepared tea.</p></div>
+        <div><h3>Promise</h3><p><code>prepareTea(order)</code> immediately returns a Promise. It settles when the order becomes ready or fails.</p></div>
+        <div><h3>Async / await</h3><p><code>await prepareTea(order)</code> pauses only that order's async function. Other orders can be accepted.</p></div>
+      </div>
+      <p id="demo-output" class="demo-output" aria-live="polite">Demo results appear here and in the activity log.</p>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

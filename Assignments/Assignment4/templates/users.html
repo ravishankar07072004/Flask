@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Registered Users{% endblock %}
+
+{% block content %}
+    <h2> Registered Users List</h2>
+    <p class="subtitle">All students who have registered</p>
+
+    {% if users %}
+    <div class="user-count">Total Registered: <strong>{{ users | length }}</strong></div>
+
+    <table class="users-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Course</th>
+                <th>Gender</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ user.course }}</td>
+                <td>{{ user.gender }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <div class="no-users">
+        <p> No users registered yet.</p>
+        <p>Go to the registration form and add some users!</p>
+    </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Portal{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- ========== HEADER (Same for all pages) ========== -->
+    <header class="site-header">
+        <div class="header-content">
+            <h1 class="logo"> Student Portal</h1>
+            <nav class="main-nav">
+                <a href="{{ url_for('register_page') }}"> Register</a>
+                <a href="{{ url_for('users_page') }}"> Users</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT (Changes per page) ========== -->
+    <div class="container">
+        {% block content %}
+        <!-- Each page puts its own content here -->
+        {% endblock %}
+    </div>
+
+    <!-- ========== FOOTER (Same for all pages) ========== -->
+    <footer class="site-footer">
+        <p>Student Portal</p>
+           </footer>
+
+    <!-- Page-specific scripts -->
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+</html>

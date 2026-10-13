@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Community Events{% endblock %}</title>
+    <!-- Static stylesheet loaded dynamically via Flask url_for -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Header & Navigation Bar Partial -->
+    {% include 'includes/_navbar.html' %}
+    <header class="top">
+    <div class="top-inner">
+        <a class="brand" href="{{ url_for('index') }}">community<span>·</span><em>events</em></a>
+        <nav class="nav" aria-label="Main navigation">
+            <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Explore</a>
+             <a href="{{ url_for('event_details') }}" class="{% if request.endpoint == 'event_details' %}active{% endif %}">Event details</a>
+            <a href="{{ url_for('register_event') }}" class="{% if request.endpoint == 'register_event' %}active{% endif %}">Registration</a> 
+            <a href="{{ url_for('create_event') }}" class="nav-cta">+ Post event</a>
+        </nav>
+    </div>
+</header>
+
+    <!-- Main Content Container -->
+    <main class="shell">
+        <!-- Flash Message Alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {% if category == 'error' %}error{% endif %}">
+                        {% if category == 'error' %}⚠️{% else %}✓{% endif %} &nbsp; {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Dynamic Page Body injected here by child templates -->
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer class="footer">
+    Community Event Manager &middot; Flask & Jinja2 Web Application &middot; Running on Localhost
+</footer>
+    <!-- Footer Partial -->
+    {% include 'includes/_footer.html' %}
+
+</body>
+</html>

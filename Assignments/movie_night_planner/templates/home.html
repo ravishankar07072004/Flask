@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Browse Movie Nights{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">YOUR NEXT GREAT WATCH</p>
+    <h1>Good movies are better <span>together.</span></h1>
+    <p class="hero-copy">Create a movie night, suggest your picks, and let everyone vote for the film.</p>
+    {% if session.get('user_id') %}<a class="button" href="{{ url_for('create_night') }}">＋ Create a movie night</a>
+    {% else %}<a class="button" href="{{ url_for('register') }}">Get started</a>{% endif %}
+  </div>
+  <div class="hero-art" aria-hidden="true"><div class="screen">▶</div><div class="ticket">MOVIE<br><b>NIGHT</b></div><span class="spark spark-one">✦</span><span class="spark spark-two">✦</span></div>
+</section>
+<section class="section-heading">
+  <div><p class="eyebrow">THE COMMUNITY BOARD</p><h2>Upcoming movie nights</h2></div>
+  <span class="count-pill">{{ nights|length }} plan{% if nights|length != 1 %}s{% endif %}</span>
+</section>
+<form class="filter-bar" method="get" action="{{ url_for('home') }}">
+  <div class="search-field"><span>⌕</span><input type="search" name="q" placeholder="Search by movie night title..." value="{{ q }}"></div>
+  <select name="category" aria-label="Filter by category">
+    <option value="">All categories</option>
+    {% for item in categories %}<option value="{{ item }}" {% if category == item %}selected{% endif %}>{{ item }}</option>{% endfor %}
+  </select>
+  <button class="button" type="submit">Search</button>
+  {% if q or category %}<a class="reset-link" href="{{ url_for('home') }}">Clear filters</a>{% endif %}
+</form>
+{% if nights %}
+<div class="night-grid">
+{% for night in nights %}
+  <article class="night-card">
+    <div class="card-top"><span class="category-tag">{{ night.category }}</span><span class="status-tag {{ night.status }}">{{ 'Finalized' if night.status == 'finalized' else 'Voting open' }}</span></div>
+    <div class="date-block"><span>{{ night.night_date.strftime('%b') }}</span><strong>{{ night.night_date.strftime('%d') }}</strong><small>{{ night.night_date.strftime('%Y') }}</small></div>
+    <h3><a href="{{ url_for('night_detail', night_id=night.id) }}">{{ night.title }}</a></h3>
+    <p class="muted clamp">{{ night.description }}</p>
+    <div class="card-footer"><span>By {{ night.creator_name }}</span><span>◉ {{ night.choice_count }} choices</span></div>
+    <a class="card-link" href="{{ url_for('night_detail', night_id=night.id) }}">View movie night <span>→</span></a>
+  </article>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><div class="empty-icon">⌕</div><h3>No movie nights found</h3><p>Try a different title or category, or clear your filters to see every plan.</p><a class="button button-light" href="{{ url_for('home') }}">Clear search and filter</a></div>
+{% endif %}
+{% endblock %}

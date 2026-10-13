@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Student Registration Form{% endblock %}
+
+{% block content %}
+    <h2> Student Registration Form</h2>
+    <p class="subtitle">Fill in your details to register</p>
+
+    <!-- Success / Error Message Box -->
+    <div id="message" class="message" style="display: none;"></div>
+
+    <!-- Registration Form -->
+    <form id="registrationForm">
+
+        <div class="form-group">
+            <label for="name">Full Name <span class="required">*</span></label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address <span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone Number <span class="required">*</span></label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+        </div>
+
+        <div class="form-group">
+            <label for="course">Select Course <span class="required">*</span></label>
+            <select id="course" name="course" required>
+                <option value="">-- Choose a Course --</option>
+                <option value="Python">Python</option>
+                <option value="Flask">Flask Web Development</option>
+                <option value="MySQL">MySQL</option>
+                <option value="MongoDB">MongoDB</option>
+                <option value="HTML & CSS">HTML & CSS</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="Full Stack">Full Stack Development</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Gender</label>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="gender" value="Male"> Male
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="gender" value="Female"> Female
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="gender" value="Other"> Other
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Register</button>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}

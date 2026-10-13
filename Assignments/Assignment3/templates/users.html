@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Registered Users{% endblock %}
+
+{% block content %}
+
+<h2>Registered Users List</h2>
+<p class="subtitle">All students who have registered</p>
+
+{% if users %}
+
+<div class="user-count">
+    Total Registered: <strong>{{ users | length }}</strong>
+</div>
+
+<div class="users-grid">
+    {% for user in users %}
+    <div class="user-card">
+
+        <div class="user-card-header">
+            <h3>{{ user.name }}</h3>
+            <span class="user-id">ID: {{ user.id }}</span>
+        </div>
+
+        <div class="user-card-body">
+
+            <div class="user-detail">
+                <span class="detail-label">Email</span>
+                <span class="detail-value">{{ user.email }}</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Phone</span>
+                <span class="detail-value">{{ user.phone }}</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Date of Birth</span>
+                <span class="detail-value">{{ user.dob }}</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Gender</span>
+                <span class="detail-value">{{ user.gender }}</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Course</span>
+                <span class="detail-value">{{ user.course }}</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Qualification</span>
+                <span class="detail-value">{{ user.qualification }}</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Training Mode</span>
+                <span class="detail-value">{{ user.training_mode }}</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Skills</span>
+                <span class="detail-value">
+                    {% if user.skills is string %}
+                        {{ user.skills }}
+                    {% else %}
+                        {{ user.skills | join(', ') }}
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Experience</span>
+                <span class="detail-value">{{ user.experience }} years</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Address</span>
+                <span class="detail-value">{{ user.address }}</span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Website</span>
+                <span class="detail-value">
+                    {% if user.website %}
+                        <a href="{{ user.website }}" target="_blank"
+                           rel="noopener noreferrer">{{ user.website }}</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="user-detail">
+                <span class="detail-label">Registration Date</span>
+                <span class="detail-value">{{ user.created_at }}</span>
+            </div>
+
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+
+<div class="no-users">
+    <p>No users registered yet.</p>
+    <p>Go to the registration form and add some users!</p>
+</div>
+
+{% endif %}
+
+{% endblock %}

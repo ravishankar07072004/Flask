@@ -1,0 +1,60 @@
+* { box-sizing: border-box; }
+:root {
+  --ink: #24373a; --muted: #758084; --teal: #173f43; --teal-bright: #176b69;
+  --page: #f5f4ef; --panel: #fff; --line: #e0e5e2; --pale: #eaf4ef;
+}
+body { margin: 0; background: var(--page); color: var(--ink); font-family: Arial, Helvetica, sans-serif; font-size: 14px; }
+.hero { background: var(--teal); color: #fff; }
+.hero-inner { max-width: 1050px; margin: auto; padding: 22px 18px 20px; }
+.eyebrow { margin: 0 0 9px; color: #b5d9d1; font-size: 10px; letter-spacing: .12em; font-weight: 800; }
+h1 { margin: 0; font-size: clamp(26px, 3vw, 36px); letter-spacing: -.03em; }
+.cup { margin-right: 8px; }
+.hero p:last-child { margin: 8px 0 0; color: #d6e6e2; font-size: 13px; }
+.container { max-width: 1050px; width: calc(100% - 32px); margin: 18px auto 42px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; box-shadow: 0 4px 16px rgba(32, 54, 49, .035); min-width: 0; }
+h2 { font-size: 16px; margin: 0 0 10px; }
+h3 { font-size: 12px; margin: 0 0 6px; }
+p { line-height: 1.45; }
+.predict { background: var(--pale); margin-bottom: 12px; }
+.predict p { color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+.demo-buttons { display: flex; gap: 7px; flex-wrap: wrap; }
+button { border: 0; border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; padding: 9px 12px; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #84bbb2; outline-offset: 2px; }
+.demo-button { background: #dcebe6; color: #24484a; font-size: 12px; }
+.demo-button:hover { background: #cde1da; }
+.small-note { margin: 10px 0 0 !important; font-size: 10px !important; }
+.top-grid { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.2fr); gap: 12px; margin-bottom: 12px; }
+.order-panel label:not(.check-row) { display: block; font-weight: 700; font-size: 12px; margin: 10px 0 5px; }
+input:not([type=checkbox]), select { width: 100%; border: 1px solid #d8dfdc; border-radius: 7px; padding: 10px; color: var(--ink); background: white; font: inherit; }
+.check-row { display: flex; align-items: center; gap: 7px; margin: 12px 0; color: #4f5b5e; font-size: 12px; }
+.check-row input { margin: 0; }
+.primary { background: var(--teal-bright); color: white; padding: 10px 15px; }
+.primary:hover { background: #125a58; }
+.form-message { color: #b43131; font-size: 12px; margin: 8px 0 0; min-height: 0; }
+.panel-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.panel-heading p { color: var(--muted); font-size: 12px; margin: 0; }
+.quiet-button { background: #f0f2f1; color: #344548; font-size: 12px; white-space: nowrap; }
+.activity-log { padding-left: 23px; margin: 12px 0 0; font-size: 12px; }
+.activity-log li { padding: 7px 0; border-bottom: 1px solid #edf0ee; overflow-wrap: anywhere; }
+.activity-log time { color: #899294; font-size: 10px; margin-right: 5px; }
+.status-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: stretch; margin-bottom: 12px; }
+.status-panel { min-height: 230px; }
+.status-panel h2 { font-size: 15px; }
+.count { font-size: 11px; color: #7a8586; font-weight: 600; }
+.order-list { display: grid; gap: 5px; }
+.order-item { border: 1px solid #e3e8e5; border-radius: 7px; background: #fafcfb; padding: 9px; }
+.order-item strong { display: block; font-size: 11px; margin-bottom: 5px; overflow-wrap: anywhere; }
+.order-item p { color: var(--muted); font-size: 10px; margin: 0; }
+.order-item .explanation { margin-top: 5px; color: #a13b35; font-size: 10px; }
+.empty { color: var(--muted); font-size: 12px; margin: 0; }
+.teaching-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.teaching-grid p { margin: 0; color: var(--muted); font-size: 11px; }
+code { background: #edf2ef; border-radius: 3px; padding: 1px 3px; }
+.demo-output { margin: 14px 0 0; background: #f1f6f3; border-left: 3px solid #5c9a88; padding: 9px 11px; border-radius: 4px; font-size: 12px; }
+@media (max-width: 720px) {
+  .top-grid { grid-template-columns: 1fr; }
+  .status-grid { grid-template-columns: 1fr; }
+  .teaching-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-inner { padding-top: 20px; }
+}
+@media (max-width: 420px) { .teaching-grid { grid-template-columns: 1fr; } .container { width: calc(100% - 20px); } }

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Log In{% endblock %}
+{% block content %}
+<div class="auth-layout"><div class="auth-art"><span class="eyebrow">YOUR SEAT IS WAITING</span><h2>Ready to find tonight’s favorite?</h2><p>Log in to create plans, add movie choices, and cast your vote.</p><div class="big-play">▶</div></div>
+<div class="form-card"><p class="eyebrow">WELCOME BACK</p><h1>Log in</h1><p class="muted">Enter your account details below.</p>
+<form method="post" class="stack-form">
+<label>Username<input name="username" required autocomplete="username" value="{{ request.form.get('username','') }}"></label>
+<label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+<button class="button full" type="submit">Log in</button>
+</form><p class="form-bottom">New here? <a href="{{ url_for('register') }}">Create an account</a></p></div></div>
+{% endblock %}

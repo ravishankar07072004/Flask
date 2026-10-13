@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ night.title }}{% endblock %}
+{% block content %}
+<a class="back-link" href="{{ url_for('home') }}">← All movie nights</a>
+<section class="detail-hero">
+  <div><div class="card-top"><span class="category-tag">{{ night.category }}</span><span class="status-tag {{ night.status }}">{{ 'Finalized' if night.status == 'finalized' else 'Voting open' }}</span></div>
+  <p class="eyebrow">MOVIE NIGHT PLAN</p><h1>{{ night.title }}</h1><p class="detail-description">{{ night.description }}</p>
+  <div class="detail-meta"><span>▣ {{ night.night_date.strftime('%A, %B %d, %Y') }}</span><span>Created by {{ night.creator_name }}</span></div></div>
+  <div class="detail-reel">▶<small>LET'S WATCH</small></div>
+</section>
+{% if final_choice %}
+<section class="result-banner"><div class="result-icon">✓</div><div><p class="eyebrow">THE WINNER IS</p><h2>{{ final_choice.title }}</h2><p>{{ final_choice.genre }} · {{ final_choice.reason }}</p></div><span class="winner-label">Final selection</span></section>
+{% endif %}
+<div class="detail-columns"><section class="content-panel"><div class="panel-heading"><div><p class="eyebrow">THE SHORTLIST</p><h2>Movie choices <span class="small-count">{{ choices|length }}</span></h2></div>{% if night.status == 'open' %}<span class="muted small">Vote for your favorite</span>{% endif %}</div>
+{% if choices %}
+<div class="choice-list">
+{% for choice in choices %}
+<article class="choice-card {% if final_choice and final_choice.id == choice.id %}winner-choice{% endif %}">
+  <div class="movie-poster">{{ choice.title[:1]|upper }}<span>▶</span></div>
+  <div class="choice-info"><span class="genre-label">{{ choice.genre }}</span><h3>{{ choice.title }}</h3><p>{{ choice.reason }}</p>
+    {% if final_choice and final_choice.id == choice.id %}<span class="winner-chip">✓ Selected movie</span>{% endif %}
+    {% if my_vote and my_vote.choice_id == choice.id %}<span class="your-vote">Your vote</span>{% endif %}
+  </div><div class="vote-total"><strong>{{ choice.vote_count }}</strong><span>vote{% if choice.vote_count != 1 %}s{% endif %}</span></div>
+  {% if session.get('user_id') and night.status == 'open' %}
+  <form method="post" action="{{ url_for('vote', night_id=night.id) }}"><input type="hidden" name="choice_id" value="{{ choice.id }}"><button class="vote-button {% if my_vote and my_vote.choice_id == choice.id %}voted{% endif %}" type="submit">{{ 'Voted ✓' if my_vote and my_vote.choice_id == choice.id else 'Vote' }}</button></form>
+  {% endif %}
+  {% if session.get('user_id') == choice.added_by and night.status == 'open' %}<form method="post" action="{{ url_for('delete_choice', choice_id=choice.id) }}" onsubmit="return confirm('Delete this movie choice?')"><button class="icon-button" title="Delete your choice" aria-label="Delete your choice">×</button></form>{% endif %}
+</article>
+{% endfor %}</div>
+{% else %}<div class="inline-empty"><h3>No movie choices yet</h3><p>Add a movie suggestion first. Vote buttons will appear beside each movie.</p></div>{% endif %}
+{% if session.get('user_id') and night.status == 'open' %}
+<div class="subform"><h3>＋ Suggest a movie</h3><form method="post" action="{{ url_for('add_choice', night_id=night.id) }}" class="stack-form">
+<label>Movie title<input name="title" maxlength="150" required placeholder="e.g. The Grand Budapest Hotel"></label>
+<label>Genre<select name="genre" required><option value="">Choose genre</option>{% for genre in genres %}<option>{{ genre }}</option>{% endfor %}</select></label>
+<label>Why this movie?<textarea name="reason" maxlength="300" rows="2" required placeholder="A short reason for suggesting it..."></textarea></label>
+<button class="button" type="submit">Add movie choice</button></form></div>
+{% endif %}
+</section>
+<aside class="side-column">
+<section class="content-panel"><p class="eyebrow">PLAN DETAILS</p><div class="detail-stat"><span>Date</span><strong>{{ night.night_date.strftime('%b %d, %Y') }}</strong></div><div class="detail-stat"><span>Category</span><strong>{{ night.category }}</strong></div><div class="detail-stat"><span>Movie choices</span><strong>{{ choices|length }}</strong></div><div class="detail-stat"><span>Status</span><strong>{{ 'Finalized' if night.status == 'finalized' else 'Open for voting' }}</strong></div>
+{% if is_owner and night.status == 'open' %}
+<div class="owner-actions"><a class="button button-light full" href="{{ url_for('edit_night', night_id=night.id) }}">Edit movie night</a>
+<form method="post" action="{{ url_for('delete_night', night_id=night.id) }}" onsubmit="return confirm('Delete this movie night and all its votes?')"><button class="button button-danger full" type="submit">Delete movie night</button></form></div>
+{% endif %}
+</section>
+{% if is_owner and night.status == 'open' %}
+<section class="content-panel finalize-panel"><p class="eyebrow">YOUR FINAL PICK</p><h3>Choose the movie</h3><p class="muted small">You need at least two choices before finalizing. This closes voting.</p>
+{% if choices|length >= 2 %}<form method="post" action="{{ url_for('finalize', night_id=night.id) }}" class="stack-form"><label>Final movie<select name="choice_id" required><option value="">Select a movie</option>{% for choice in choices %}<option value="{{ choice.id }}">{{ choice.title }} ({{ choice.vote_count }} votes)</option>{% endfor %}</select></label><button class="button full" type="submit" onclick="return confirm('Finalize this movie? Voting will close.')">Finalize movie</button></form>{% else %}<button class="button full" disabled>Add one more choice first</button>{% endif %}
+</section>
+{% endif %}
+{% if not session.get('user_id') and night.status == 'open' %}<section class="content-panel callout"><h3>Have a favorite?</h3><p class="muted">Log in to vote for one of the movie choices.</p><a class="button full" href="{{ url_for('login') }}">Log in to vote</a></section>{% endif %}
+</aside></div>
+{% endblock %}
