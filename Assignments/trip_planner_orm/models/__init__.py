@@ -5,3 +5,4 @@ from .activity import Activity
 from .place_suggestion import PlaceSuggestion
 
 __all__ = ['User', 'Trip', 'Activity', 'PlaceSuggestion']
+
