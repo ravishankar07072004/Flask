@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Health Claims Simulator{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+<div class="app-shell {% if not current_user.is_authenticated %}auth-shell{% endif %}">
+  {% if current_user.is_authenticated %}<aside class="sidebar navbar-orange">
+    <a class="sidebar-brand fw-semibold" href="{{ url_for('main.dashboard') if current_user.is_authenticated else url_for('auth.login') }}">Health Claims Simulator</a>
+    {% if current_user.is_authenticated %}
+    <div class="sidebar-user">
+      <div class="sidebar-user-name">{{ current_user.display_name }}</div>
+      <div class="sidebar-user-role">{{ current_user.role|replace('_',' ')|title }}</div>
+    </div>
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+      <a class="nav-link" href="{{ url_for('claims.list_claims') }}">Claims</a>
+      <a class="nav-link" href="{{ url_for('main.policies') }}">Policies</a>
+      <a class="nav-link" href="{{ url_for('main.reports') }}">Reports</a>
+      {% if current_user.role in ['policyholder','hospital'] %}<a class="nav-link" href="{{ url_for('claims.new_claim') }}">New Claim</a>{% endif %}
+      <a class="nav-link" href="{{ url_for('auth.change_password') }}">Change Password</a>
+      {% if current_user.role == 'admin' %}<a class="nav-link" href="{{ url_for('main.admin_manage') }}">Admin Manage</a>{% endif %}
+    </nav>
+    <form class="sidebar-logout" method="post" action="{{ url_for('auth.logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-outline-light w-100">Logout</button>
+    </form>
+    {% endif %}
+  </aside>{% endif %}
+  <div class="app-main">
+    <main class="container-fluid py-4 px-4 px-xl-5">
+      {% for category, message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}<button class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
+      {% block content %}{% endblock %}
+      <p class="small text-secondary mt-5 border-top pt-3">Educational simulator using fictional data. No real insurance decision or payment is made.</p>
+    </main>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body></html>

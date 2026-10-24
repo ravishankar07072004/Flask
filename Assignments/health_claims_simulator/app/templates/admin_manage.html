@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% block title %}Admin Management
+<script>
+  (() => {
+    const addButton = document.getElementById('add-policy-member');
+    const rows = document.getElementById('policy-member-rows');
+    const emptyNote = document.getElementById('no-policy-members');
+    if (!addButton || !rows) return;
+    let nextId = 0;
+    addButton.addEventListener('click', () => {
+      if (emptyNote) emptyNote.remove();
+      const id = `policy-member-${nextId++}`;
+      const row = document.createElement('div');
+      row.className = 'row g-2 align-items-end mb-2';
+      row.id = id;
+      row.innerHTML = `
+      <div class="col-md-6"><label class="form-label" for="${id}-name">Full name</label><input class="form-control" id="${id}-name" name="member_name[]" maxlength="120" placeholder="Member name"></div>
+      <div class="col-md-4"><label class="form-label" for="${id}-relationship">Relationship</label><select class="form-select" id="${id}-relationship" name="member_relationship[]"><option value="">Choose</option><option value="spouse">Spouse</option><option value="child">Child</option><option value="parent">Parent</option><option value="sibling">Sibling</option><option value="other">Other</option></select></div>
+      <div class="col-md-2"><button class="btn btn-outline-danger w-100" type="button" aria-label="Remove member" data-remove-member="${id}">Remove</button></div>`;
+      rows.appendChild(row);
+    });
+    rows.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-remove-member]');
+      if (!button) return;
+      const row = document.getElementById(button.dataset.removeMember);
+      if (row) row.remove();
+      if (!rows.querySelector('.row')) {
+        const note = document.createElement('p');
+        note.id = 'no-policy-members';
+        note.className = 'small text-secondary mb-0';
+        note.textContent = 'No dependents added. You can create the policy without adding members.';
+        rows.appendChild(note);
+      }
+    });
+  })();
+</script>
+{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <h1 class="h2 mb-1">Administrator Management</h1>
+  <p class="text-secondary mb-0">Create user accounts and insurance policies. Only administrators can access this page.
+  </p>
+</div>
+<div class="row g-4" style="display: block;">
+  <div class="col-xl-6 w-100">
+    <div class="card h-100">
+      <div class="card-header py-3">
+        <h2 class="h5 mb-0">Create User Account</h2>
+      </div>
+      <div class="card-body">
+        <form method="post" action="{{ url_for('main.admin_manage') }}" autocomplete="off">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="form_type" value="user">
+          <div class="mb-3"><label class="form-label" for="display_name">Full name / display name</label><input
+              class="form-control" id="display_name" name="display_name" maxlength="120" required></div>
+          <div class="mb-3"><label class="form-label" for="username">Username</label><input class="form-control"
+              id="username" name="username" maxlength="80" autocomplete="off" required></div>
+          <div class="mb-3"><label class="form-label" for="password">Initial password</label><input class="form-control"
+              type="password" id="password" name="password" minlength="8" autocomplete="new-password" required>
+            <div class="form-text">Minimum 8 characters. The password is stored as a hash.</div>
+          </div>
+          <div class="mb-3"><label class="form-label" for="role">Role</label><select class="form-select" id="role"
+              name="role" required>
+              <option value="">Choose role</option>
+              <option value="policyholder">Policyholder</option>
+              <option value="hospital">Hospital Desk</option>
+              <option value="claims_officer">Claims Officer</option>
+              <option value="admin">Administrator</option>
+            </select></div>
+          <div class="mb-3" id="hospital-field" hidden><label class="form-label" for="hospital_id">Linked
+              hospital</label><select class="form-select" id="hospital_id" name="hospital_id">
+              <option value="">Choose hospital</option>{% for hospital in hospitals %}<option value="{{ hospital.id }}">
+                {{ hospital.name }} — {{ hospital.city }}{% if hospital.network_status %} (Network){% else %}
+                (Non-network){% endif %}</option>{% endfor %}
+            </select>
+            <div class="form-text">Required for hospital desk accounts.</div>
+          </div>
+          <button class="btn btn-primary" type="submit">Create User</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6 w-100" id="create-policy">
+    <div class="card h-100">
+      <div class="card-header py-3">
+        <h2 class="h5 mb-0">Create Insurance Policy</h2>
+      </div>
+      <div class="card-body">
+        {% if not plans %}<div class="alert alert-warning">Create an insurance plan before creating a policy.</div>{%
+        endif %}
+        <form method="post" action="{{ url_for('main.admin_manage') }}#create-policy">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="form_type" value="policy">
+          <div class="mb-3">
+            <label class="form-label" for="holder_mode">Policyholder account</label>
+            <select class="form-select" id="holder_mode" name="holder_mode" required>
+              <option value="existing" selected>Select an existing policyholder</option>
+              <option value="new">Create a new policyholder account</option>
+            </select>
+          </div>
+          <div class="mb-3" id="existing-holder-fields">
+            <label class="form-label" for="holder_user_id">Existing policyholder</label>
+            <select class="form-select" id="holder_user_id" name="holder_user_id">
+              <option value="">Choose policyholder</option>{% for holder in holders %}<option value="{{ holder.id }}">{{
+                holder.display_name }} ({{ holder.username }})</option>{% endfor %}
+            </select>
+            {% if not holders %}<div class="form-text">No policyholder accounts yet. Choose “Create a new policyholder
+              account” above.</div>{% endif %}
+          </div>
+          <div class="border rounded-3 p-3 mb-3" id="new-holder-fields" hidden>
+            <h3 class="h6 mb-3">New Policyholder Account</h3>
+            <p class="small text-secondary">Create the login account here if the policyholder does not already exist.
+              The account and policy will be saved together.</p>
+            <div class="mb-3"><label class="form-label" for="new_holder_name">Full name</label><input
+                class="form-control" id="new_holder_name" name="new_holder_name" maxlength="120" autocomplete="name"
+                placeholder="Policyholder full name"></div>
+            <div class="mb-3"><label class="form-label" for="new_holder_username">Username</label><input
+                class="form-control" id="new_holder_username" name="new_holder_username" maxlength="80"
+                autocomplete="off" placeholder="Unique username">
+              <div class="form-text">If this username already belongs to a policyholder, that existing account will be
+                used.</div>
+            </div>
+            <div><label class="form-label" for="new_holder_password">Initial password</label><input class="form-control"
+                type="password" id="new_holder_password" name="new_holder_password" minlength="8"
+                autocomplete="new-password" placeholder="At least 8 characters">
+              <div class="form-text">Password is stored securely as a hash.</div>
+            </div>
+          </div>
+          <script>
+            (() => {
+              const mode = document.getElementById('holder_mode');
+              const existing = document.getElementById('existing-holder-fields');
+              const fresh = document.getElementById('new-holder-fields');
+              const existingSelect = document.getElementById('holder_user_id');
+              const name = document.getElementById('new_holder_name');
+              const username = document.getElementById('new_holder_username');
+              const password = document.getElementById('new_holder_password');
+              function updateHolderMode() {
+                const isNew = mode.value === 'new';
+                existing.hidden = isNew;
+                fresh.hidden = !isNew;
+                existingSelect.required = !isNew;
+                name.required = isNew;
+                username.required = isNew;
+                password.required = isNew;
+              }
+              mode.addEventListener('change', updateHolderMode);
+              updateHolderMode();
+            })();
+          </script>
+          <div class="mb-3"><label class="form-label" for="plan_id">Insurance plan</label><select class="form-select"
+              id="plan_id" name="plan_id" required>
+              <option value="">Choose plan</option>{% for plan in plans %}<option value="{{ plan.id }}">{{
+                plan.plan_name }} — annual limit ₹{{ '%.2f'|format(plan.annual_limit_inr|float) }}</option>{% endfor %}
+            </select></div>
+          <div class="row g-3">
+            <div class="col-md-6"><label class="form-label" for="start_date">Coverage start date</label><input
+                class="form-control" type="date" id="start_date" name="start_date" value="{{ today }}" required></div>
+            <div class="col-md-6"><label class="form-label" for="end_date">Coverage end date</label><input
+                class="form-control" type="date" id="end_date" name="end_date" required></div>
+          </div>
+          <div class="mt-3 mb-3"><label class="form-label" for="status">Policy status</label><select class="form-select"
+              id="status" name="status" required>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="expired">Expired</option>
+            </select></div>
+          <div class="border rounded-3 p-3 mb-3" id="policy-members">
+            <div class="mb-2">
+              <h3 class="h6 mb-1">Policy Members <span class="text-secondary fw-normal">(optional)</span></h3>
+              <p class="small text-secondary mb-0">Select existing policyholder user accounts to cover under this
+                policy. To add a user who does not exist yet, create that account first using the policyholder account
+                option above.</p>
+            </div>
+            <div class="row g-2" id="policy-member-rows" style="overflow: scroll; height: 200px;">
+              {% for member_user in holders %}
+              <div class="col-md-6 policy-member-option" data-user-id="{{ member_user.id }}">
+                <label class="border rounded-3 p-2 d-flex align-items-center gap-2 h-100">
+                  <input class="form-check-input policy-member-checkbox" type="checkbox" name="member_user_id[]"
+                    value="{{ member_user.id }}" {% if request.form.getlist('member_user_id[]') and
+                    (member_user.id|string) in request.form.getlist('member_user_id[]') %}checked{% endif %}>
+                  <span><strong>{{ member_user.display_name }}</strong><br><small class="text-secondary">@{{
+                      member_user.username }}</small></span>
+                </label>
+              </div>
+              {% else %}<p class="small text-secondary mb-0">No existing policyholder accounts available yet.</p>{%
+              endfor %}
+            </div>
+            <div class="form-text mt-2">The selected policyholder is automatically excluded from the member list.</div>
+          </div>
+          <script>
+            (() => {
+              const holderSelect = document.getElementById('holder_user_id');
+              const memberOptions = document.querySelectorAll('.policy-member-option');
+              const boxes = document.querySelectorAll('.policy-member-checkbox');
+              function updateMembers() {
+                const selectedHolder = holderSelect.value;
+                memberOptions.forEach(option => {
+                  const box = option.querySelector('input');
+                  const isHolder = option.dataset.userId === selectedHolder;
+                  if (isHolder) box.checked = false;
+                  box.disabled = isHolder;
+                  option.classList.toggle('opacity-50', isHolder);
+                });
+              }
+              holderSelect.addEventListener('change', updateMembers);
+              updateMembers();
+            })();
+          </script>
+          <button class="btn btn-primary" type="submit" {% if not plans %}disabled{% endif %}>Create Policy</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card mt-4" id="create-plan">
+  <div class="card-header py-3">
+    <h2 class="h5 mb-0">Create Insurance Plan</h2>
+  </div>
+  <div class="card-body">
+    <p class="text-secondary">Create a plan first; it will then appear in the Insurance plan dropdown when creating a
+      policy.</p>
+    <form method="post" action="{{ url_for('main.admin_manage') }}#create-plan" autocomplete="off">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="form_type" value="plan">
+      <div class="row g-3">
+        <div class="col-lg-6"><label class="form-label" for="plan_name">Plan name</label><input class="form-control"
+            id="plan_name" name="plan_name" maxlength="100" placeholder="e.g. Silver Health Plan" required></div>
+        <div class="col-lg-6"><label class="form-label" for="covered_treatment_types">Covered treatment
+            types</label><input class="form-control" id="covered_treatment_types" name="covered_treatment_types"
+            placeholder="e.g. surgery, emergency, maternity" required>
+          <div class="form-text">Enter comma-separated treatment types.</div>
+        </div>
+        <div class="col-md-4"><label class="form-label" for="annual_limit_inr">Annual coverage limit (₹)</label><input
+            class="form-control" type="number" id="annual_limit_inr" name="annual_limit_inr" min="0.01" step="0.01"
+            required></div>
+        <div class="col-md-4"><label class="form-label" for="deductible_inr">Deductible (₹)</label><input
+            class="form-control" type="number" id="deductible_inr" name="deductible_inr" min="0" step="0.01" value="0"
+            required></div>
+        <div class="col-md-4"><label class="form-label" for="copay_percent">Copay (%)</label><input class="form-control"
+            type="number" id="copay_percent" name="copay_percent" min="0" max="100" step="0.01" value="0" required>
+        </div>
+      </div>
+      <button class="btn btn-primary mt-3" type="submit">Create Insurance Plan</button>
+    </form>
+  </div>
+</div>
+<div class="card mt-4" id="existing-plans">
+  <div class="card-header py-3">
+    <h2 class="h5 mb-0">Existing Insurance Plans</h2>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Plan name</th>
+          <th>Annual limit</th>
+          <th>Deductible</th>
+          <th>Copay</th>
+          <th>Covered treatment types</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for plan in plans %}<tr>
+          <td>{{ plan.plan_name }}</td>
+          <td>₹{{ '%.2f'|format(plan.annual_limit_inr|float) }}</td>
+          <td>₹{{ '%.2f'|format(plan.deductible_inr|float) }}</td>
+          <td>{{ '%.2f'|format(plan.copay_percent|float) }}%</td>
+          <td>{{ plan.covered_treatment_types|replace('|', ', ') }}</td>
+        </tr>{% else %}<tr>
+          <td colspan="5" class="p-4 text-secondary">No insurance plans found.</td>
+        </tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="card mt-4" id="reset-password">
+  <div class="card-header py-3">
+    <h2 class="h5 mb-0">Reset Any User Password</h2>
+  </div>
+  <div class="card-body">
+    <p class="text-secondary">Administrators can set a new password for any account. Share the new password securely
+      with that user.</p>
+    <form method="post" action="{{ url_for('main.admin_manage') }}#reset-password" autocomplete="off">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="form_type" value="reset_password">
+      <div class="row g-3">
+        <div class="col-lg-4"><label class="form-label" for="reset_user_id">User account</label><select
+            class="form-select" id="reset_user_id" name="user_id" required>
+            <option value="">Choose user</option>{% for user in users %}<option value="{{ user.id }}">{{
+              user.display_name }} — {{ user.username }} ({{ user.role|replace('_',' ')|title }})</option>{% endfor %}
+          </select></div>
+        <div class="col-lg-4"><label class="form-label" for="reset_new_password">New password</label><input
+            class="form-control" type="password" id="reset_new_password" name="new_password" minlength="8"
+            autocomplete="new-password" required></div>
+        <div class="col-lg-4"><label class="form-label" for="reset_confirm_password">Confirm new password</label><input
+            class="form-control" type="password" id="reset_confirm_password" name="confirm_password" minlength="8"
+            autocomplete="new-password" required></div>
+      </div>
+      <button class="btn btn-primary mt-3" type="submit">Reset Password</button>
+    </form>
+  </div>
+</div>
+<div class="card mt-4" id="existing-users">
+  <div class="card-header py-3">
+    <h2 class="h5 mb-0">Existing Users</h2>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Linked hospital</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}<tr>
+          <td>{{ user.display_name }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.role|replace('_',' ')|title }}</td>
+          <td>{{ user.hospital.name if user.hospital else '—' }}</td>
+          <td>
+            {% if user.id != current_user.id %}
+            <form method="post" action="{{ url_for('main.admin_manage') }}#existing-users"
+              onsubmit="return confirm('Remove user account {{ user.username|e }}? Accounts linked to policies or claim history cannot be removed.');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="form_type" value="delete_user">
+              <input type="hidden" name="user_id" value="{{ user.id }}">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+            </form>
+            {% else %}<span class="text-secondary small">Current account</span>{% endif %}
+          </td>
+        </tr>{% else %}<tr>
+          <td colspan="5" class="p-4 text-secondary">No user accounts found.</td>
+        </tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card-body">
+    <p class="small text-secondary mb-0">For data integrity, accounts linked to policies, claims, settlements, or claim
+      history cannot be removed. The currently signed-in administrator and the last administrator are also protected.
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Sign in · Health Claims Simulator{% endblock %}
+{% block content %}
+<div class="login-layout">
+  <section class="login-intro" aria-label="Application introduction">
+    <div class="login-brand-mark"><span class="brand-symbol">+</span><span>Health Claims <strong>Simulator</strong></span></div>
+    <div class="login-intro-copy">
+      <span class="eyebrow">CLAIMS WORKFLOW DEMO</span>
+      <h1>Healthcare claims, <span>made clearer.</span></h1>
+      <p>A learning environment to explore policy administration, claim submissions, reviews, and decisions in one place.</p>
+      <div class="login-feature-list">
+        <div class="login-feature"><span class="feature-icon">✓</span><div><strong>One clear workflow</strong><small>Follow a claim from submission to outcome.</small></div></div>
+        <div class="login-feature"><span class="feature-icon">⌂</span><div><strong>Role-based workspace</strong><small>Explore the experience for each demo role.</small></div></div>
+        <div class="login-feature"><span class="feature-icon">↗</span><div><strong>Built for learning</strong><small>Uses fictional data, not real insurance decisions.</small></div></div>
+      </div>
+    </div>
+    <div class="login-intro-footer">A simple, secure demo workspace <span>•</span> Fictional data only</div>
+    <div class="login-orb login-orb-one"></div><div class="login-orb login-orb-two"></div>
+  </section>
+  <section class="login-form-area">
+    <div class="login-card">
+      <div class="login-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg></div>
+      <div class="login-heading">Welcome back</div>
+      <p class="login-subheading">Sign in to continue to your workspace.</p>
+      <form method="post" class="login-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-3"><label class="form-label" for="username">Username</label><input id="username" class="form-control login-input" name="username" autocomplete="username" placeholder="Enter your username" required autofocus></div>
+        <div class="mb-2"><label class="form-label" for="password">Password</label><input id="password" class="form-control login-input" type="password" name="password" autocomplete="current-password" placeholder="Enter your password" required></div>
+        <button class="btn btn-primary login-submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
+      </form>
+      <div class="login-demo-note"><div class="demo-note-icon">i</div><div><strong>Demo access</strong><p>After running the demo seeding command, use a seeded account. Initial demo password: <code>Demo123!</code></p></div></div>
+    </div>
+    <p class="login-legal">By signing in, you are entering an educational simulator.<br>No real insurance decisions or payments are made.</p>
+  </section>
+</div>
+{% endblock %}
